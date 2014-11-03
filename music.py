@@ -1,13 +1,33 @@
 #!/usr/bin/env python3
 
-import sys, readline
+import sys, readline, threading
 from pygame import mixer as core_player
+
+
 import add_command_parser
 
 print("Working...")
 
 playlist = []
-SONG_END = pygame.USEREVENT + 1
+
+current_song = 0
+
+def thread_to_go():
+	while True:
+		from time import sleep
+		sleep(1) # Time in seconds.
+		if not core_player.music.get_busy():
+			print ("\nSong ended...")
+			global current_song
+			current_song += 1
+			if current_song < len(playlist):
+				core_player.music.load(playlist[current_song])
+				core_player.music.play()
+				print("Next song playing...\nCommand: ", end = "")
+			else:
+				print("Playlist ended...\nCommand: ", end = "")
+				break
+
 
 def commandline():
 	run = True;
@@ -23,15 +43,25 @@ def commandline():
 					core_player.music.unpause()
 					print ("Unpaused...")
 				else:
-					pygame.mixer.music.set_endevent(SONG_END)
-					core_player.music.load(playlist[0])
+					global current_song
+					if current_song >= len(playlist):
+						current_song = 0
+
+					core_player.music.load(playlist[current_song])
 					core_player.music.play()
+					t = threading.Thread(target=thread_to_go)
+					t.setDaemon(True)
+					t.start()
 					print ("Playing...")
+					
+
 		elif command == "pause":
 			core_player.music.pause()
 			print ("Song paused...")
 		elif command == "list":
 			print (playlist)
+		elif command == "current":
+			print(playlist[current_song])
 		elif command == "clear":
 			playlist.clear()
 			print ("playlist cleared...")
@@ -51,13 +81,16 @@ def commandline():
 			run = False;
 			print("Bye bye")
 
-if len(sys.argv) == 1:
-	commandline();
-else:
-	for item in sys.argv:
-		playlist.append(item)
+def startup():
+	if len(sys.argv) == 1:
+		commandline();
 	else:
-		playlist.pop(0)
+		for item in sys.argv:
+			playlist.append(item)
+		else:
+			playlist.pop(0)
 
-	print("Added successfully")
-	commandline();
+		print("Added successfully")
+		commandline();
+
+startup()
