@@ -26,14 +26,17 @@ current_song = 0
 def thread_to_go():
 	while True:
 		sleep(1) # Time in seconds.
-		if command != "stop" or not core_player.music.get_busy():
-			global current_song
-			current_song += 1
-			if current_song < len(playlist):
-				core_player.music.load(playlist[current_song])
-				core_player.music.play()
-			else:
-				break
+		if command == "stop":
+			break
+		else:
+			if not core_player.music.get_busy():
+				global current_song
+				current_song += 1
+				if current_song < len(playlist):
+					core_player.music.load(playlist[current_song])
+					core_player.music.play()
+				else:
+					break
 
 
 def commandline():
