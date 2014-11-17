@@ -36,10 +36,12 @@ stop -> stop song and reset current song to zero
 Bugs:
 =====
 
-Spaces before commands doesn't work for now. So don't add unnecessary spaces anywhere.
-
 Errors are not handling in this version. So report me any bugs or errors the player shows.
 
+Bugs Fixed:
+===========
+
+Bug related to adding extra spaces fixed. Now you can add extra spaces before or after the command and they will be automatically removed.
 
 Author's words:
 ===============
