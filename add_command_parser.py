@@ -1,9 +1,18 @@
 def add_command_string_parser(add_string):
 
+	while add_string[0] == " ": #spaces before commands auto removed
+		add_string = add_string[1:]
+	else:
+		while add_string[-1] == " ": #spaces after commands auto removed.
+			add_string = add_string[0:-1]
+	
 	space = add_string.find(' ')
 	last_stopped_point = 0
 
 	playlist =[]
+
+	if last_stopped_point == 0:
+		playlist.append(add_string[0:space])
 
 	while (last_stopped_point+1):
 		space = add_string.find(' ', last_stopped_point)
@@ -23,6 +32,7 @@ def add_command_string_parser(add_string):
 				playlist.append(add_string[(space+1):])
 			last_stopped_point = next_space
 	else:
+		playlist.pop(0)
 		print ("Added songs:", end=" ")
 		print (playlist)
 
